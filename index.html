@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lebendiger Adventskalender – Evangelische Kirchengemeinde Seeregion Friedrichshafen</title>
+    <meta name="description" content="Lebendiger Adventskalender der Evangelischen Kirchengemeinde Seeregion Friedrichshafen: jeden Abend vom 1. bis 23. Dezember um 18:00 Uhr vor einem anderen Fenster.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #9c4a53;
+            --primary-dark: #7a353d;
+            --accent: #3b5f4c;
+            --accent-light: #e6f0eb;
+            --gold: #d4af37;
+            --bg-color: #faf6f0;
+            --card-bg: #ffffff;
+            --text-main: #2d2b2a;
+            --text-muted: #6b6563;
+            --booked-bg: #fcf4f4;
+            --booked-border: #ebd5d5;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        header {
+            background: linear-gradient(135deg, #7a353d 0%, #9c4a53 100%);
+            color: white;
+            text-align: center;
+            padding: 4rem 1.5rem 3rem 1.5rem;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        .subtitle-top {
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.85;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        header h1 {
+            font-family: 'Playfair Display', serif;
+            margin: 0 0 0.8rem 0;
+            font-size: 2.8rem;
+            font-weight: 700;
+        }
+
+        header p {
+            font-size: 1.15rem;
+            opacity: 0.92;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: -2rem auto 3rem auto;
+            padding: 0 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .today-banner {
+            background: linear-gradient(135deg, #fff9f0 0%, #f4ece1 100%);
+            border: 2px solid var(--gold);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.06);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .today-badge {
+            display: inline-block;
+            background-color: var(--gold);
+            color: #ffffff;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0.3rem 1rem;
+            border-radius: 20px;
+            margin-bottom: 1rem;
+        }
+
+        .today-banner h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+            margin: 0 0 0.5rem 0;
+        }
+
+        .today-banner p {
+            font-size: 1.05rem;
+            color: var(--text-main);
+            margin: 0.4rem 0;
+        }
+
+        .today-banner .hint {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.8rem;
+        }
+
+        .today-banner .btn {
+            display: inline-block;
+            margin-top: 0.8rem;
+            padding: 0.5rem 1.2rem;
+        }
+
+        .intro {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.04);
+            margin-bottom: 2.5rem;
+            border: 1px solid rgba(0,0,0,0.03);
+            text-align: center;
+        }
+
+        .intro h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary);
+            margin-top: 0;
+            font-size: 1.6rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .intro p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            max-width: 750px;
+            margin: 0 auto 1.2rem auto;
+        }
+
+        .details-box {
+            display: inline-flex;
+            gap: 2rem;
+            background: var(--accent-light);
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            color: var(--accent);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .door-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 20px rgba(0,0,0,0.03);
+            padding: 1.5rem;
+            border: 1px solid rgba(0,0,0,0.04);
+            border-top: 5px solid var(--accent);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .door-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(0,0,0,0.07);
+        }
+
+        .door-card.booked {
+            background-color: var(--booked-bg);
+            border-color: var(--booked-border);
+            border-top-color: var(--primary);
+        }
+
+        /* Heutiges Türchen im Raster hervorheben */
+        .door-card.today {
+            outline: 3px solid var(--gold);
+            outline-offset: 2px;
+            box-shadow: 0 12px 30px rgba(212,175,55,0.25);
+        }
+
+        .today-tag {
+            display: inline-block;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #ffffff;
+            background: var(--gold);
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            margin-left: 0.4rem;
+            vertical-align: middle;
+        }
+
+        .door-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            gap: 0.5rem;
+        }
+
+        .door-number {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+        }
+
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.3rem 0.7rem;
+            border-radius: 20px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .status-badge.free {
+            background-color: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .status-badge.booked {
+            background-color: #f7dede;
+            color: var(--primary-dark);
+        }
+
+        .door-info {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            margin-bottom: 1.2rem;
+        }
+
+        .door-info p {
+            margin: 0.3rem 0;
+        }
+
+        .door-info strong {
+            color: var(--text-main);
+        }
+
+        .btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            text-align: center;
+            text-decoration: none;
+            transition: opacity 0.2s;
+            display: block;
+        }
+
+        .btn:hover {
+            opacity: 0.92;
+        }
+
+        .btn:focus-visible {
+            outline: 3px solid var(--gold);
+            outline-offset: 2px;
+        }
+
+        .btn.booked-btn {
+            background-color: #e5e0dc;
+            color: #8a8380;
+            cursor: default;
+        }
+
+        footer {
+            text-align: center;
+            padding: 3rem 1rem 4rem 1rem;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            border-top: 1px solid rgba(0,0,0,0.05);
+            margin-top: 3rem;
+        }
+
+        footer p {
+            margin: 0.3rem 0;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .details-box {
+                flex-direction: column;
+                gap: 0.5rem;
+                border-radius: 12px;
+                padding: 1rem;
+            }
+            header {
+                padding: 3rem 1rem 2.5rem 1rem;
+            }
+            header h1 {
+                font-size: 2.2rem;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .today-banner, .intro {
+                padding: 1.5rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .door-card, .btn { transition: none; }
+            .door-card:hover { transform: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="subtitle-top">Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
+        <h1>Lebendiger Adventskalender</h1>
+        <p>Jeden Abend im Dezember bis zum 23.12. um 18:00 Uhr vor einem anderen Fenster</p>
+    </header>
+
+    <main class="container">
+
+        <div id="todayBannerContainer"></div>
+
+        <section class="intro">
+            <h3>Tür auf für einen Abend!</h3>
+            <p>Im Advent sind wir jeden Abend an einer anderen Tür zu Gast. So lernen wir uns kennen, quer durch unsere neue Gemeinde. Etwa 20 bis 30 Minuten, draußen vor dem Fenster oder im Hof. Bitte bring deine Tasse mit und zieh dich warm an! ☕✨</p>
+
+            <div class="details-box">
+                <span>🕒 Täglich um 18:00 Uhr</span>
+                <span>📅 1. bis 23. Dezember</span>
+            </div>
+        </section>
+
+        <div class="calendar-grid" id="calendarGrid"></div>
+
+    </main>
+
+    <footer>
+        <p><strong>Infos &amp; Anmeldung bei Pfarrerin Sylvia Nölke</strong></p>
+        <p>
+            E-Mail: <a href="mailto:Sylvia.Noelke@elkw.de">Sylvia.Noelke@elkw.de</a>
+            · Mobil: <a href="tel:+4915141381022">0151-41 38 10 22</a>
+        </p>
+    </footer>
+
+    <script>
+        /* =====================================================================
+           HIER PFLEGEN: Belegung der 23 Türchen
+           - booked: true  -> Tag ist vergeben (rot), host + address werden angezeigt
+           - booked: false -> Tag ist frei (grün), mit Anfrage-Button per E-Mail
+           Beispiel:
+           { day: 5, booked: true, host: "Familie Muster", address: "Seestraße 1, Friedrichshafen" },
+           ===================================================================== */
+        const calendarData = [
+            { day: 1, booked: false, host: "", address: "" },
+            { day: 2, booked: false, host: "", address: "" },
+            { day: 3, booked: false, host: "", address: "" },
+            { day: 4, booked: false, host: "", address: "" },
+            { day: 5, booked: false, host: "", address: "" },
+            { day: 6, booked: false, host: "", address: "" },
+            { day: 7, booked: false, host: "", address: "" },
+            { day: 8, booked: false, host: "", address: "" },
+            { day: 9, booked: false, host: "", address: "" },
+            { day: 10, booked: false, host: "", address: "" },
+            { day: 11, booked: false, host: "", address: "" },
+            { day: 12, booked: false, host: "", address: "" },
+            { day: 13, booked: false, host: "", address: "" },
+            { day: 14, booked: false, host: "", address: "" },
+            { day: 15, booked: false, host: "", address: "" },
+            { day: 16, booked: false, host: "", address: "" },
+            { day: 17, booked: false, host: "", address: "" },
+            { day: 18, booked: false, host: "", address: "" },
+            { day: 19, booked: false, host: "", address: "" },
+            { day: 20, booked: false, host: "", address: "" },
+            { day: 21, booked: false, host: "", address: "" },
+            { day: 22, booked: false, host: "", address: "" },
+            { day: 23, booked: false, host: "", address: "" }
+        ];
+
+        const CONTACT_EMAIL = "Sylvia.Noelke@elkw.de";
+
+        // Text sicher in HTML einsetzen (Namen/Adressen mit &, <, " usw.)
+        function escapeHtml(value) {
+            return String(value ?? "")
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#39;");
+        }
+
+        function requestLink(day) {
+            const subject = encodeURIComponent(`Anmeldung Adventskalender ${day}. Dezember`);
+            return `mailto:${CONTACT_EMAIL}?subject=${subject}`;
+        }
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const grid = document.getElementById("calendarGrid");
+            const todayContainer = document.getElementById("todayBannerContainer");
+
+            // Heute zwischen 1. und 23. Dezember? Sonst Vorschau auf Tag 1.
+            const now = new Date();
+            const isAdventDay = now.getMonth() === 11 && now.getDate() >= 1 && now.getDate() <= 23;
+            const currentDay = isAdventDay ? now.getDate() : 1;
+
+            const badgeText = isAdventDay
+                ? `✨ Heutiges Türchen (${currentDay}. Dezember) ✨`
+                : `✨ Vorschau: Erstes Türchen (${currentDay}. Dezember) ✨`;
+            const whenText = isAdventDay
+                ? "Heute um 18:00 Uhr draußen vor dem Fenster"
+                : `Am ${currentDay}. Dezember um 18:00 Uhr draußen vor dem Fenster`;
+
+            const todayData = calendarData.find(d => d.day === currentDay);
+            if (todayData) {
+                if (todayData.booked) {
+                    todayContainer.innerHTML = `
+                        <div class="today-banner">
+                            <div class="today-badge">${badgeText}</div>
+                            <h2>${escapeHtml(todayData.host)}</h2>
+                            <p>📍 <strong>Wo?</strong> ${escapeHtml(todayData.address)}</p>
+                            <p>🕒 <strong>Wann?</strong> ${whenText}</p>
+                            <p class="hint">Bringt eure Tasse mit! ☕</p>
+                        </div>
+                    `;
+                } else {
+                    todayContainer.innerHTML = `
+                        <div class="today-banner">
+                            <div class="today-badge">${badgeText}</div>
+                            <h2>Noch kein Gastgeber eingetragen</h2>
+                            <p>Für ${isAdventDay ? "den heutigen Tag" : "diesen Tag"} ist noch kein Fenster vergeben.</p>
+                            <a href="${requestLink(currentDay)}" class="btn">Diesen Tag jetzt anfragen</a>
+                        </div>
+                    `;
+                }
+            }
+
+            grid.innerHTML = "";
+            calendarData.forEach(item => {
+                const card = document.createElement("div");
+                const isToday = isAdventDay && item.day === currentDay;
+                const todayTag = isToday ? `<span class="today-tag">Heute</span>` : "";
+
+                if (item.booked) {
+                    card.className = "door-card booked" + (isToday ? " today" : "");
+                    card.innerHTML = `
+                        <div>
+                            <div class="door-header">
+                                <span class="door-number">${item.day}. Dezember${todayTag}</span>
+                                <span class="status-badge booked">Vergeben</span>
+                            </div>
+                            <div class="door-info">
+                                <p><strong>Gastgeber:</strong> ${escapeHtml(item.host)}</p>
+                                <p><strong>Ort:</strong> ${escapeHtml(item.address)}</p>
+                            </div>
+                        </div>
+                        <div class="btn booked-btn">Bereits vergeben</div>
+                    `;
+                } else {
+                    card.className = "door-card" + (isToday ? " today" : "");
+                    card.innerHTML = `
+                        <div>
+                            <div class="door-header">
+                                <span class="door-number">${item.day}. Dezember${todayTag}</span>
+                                <span class="status-badge free">Frei</span>
+                            </div>
+                            <div class="door-info">
+                                <p><strong>Uhrzeit:</strong> 18:00 Uhr</p>
+                                <p>Wer öffnet an diesem Abend die Tür?</p>
+                            </div>
+                        </div>
+                        <a href="${requestLink(item.day)}" class="btn">Diesen Tag anfragen</a>
+                    `;
+                }
+                grid.appendChild(card);
+            });
+        });
+    </script>
+</body>
+</html>
