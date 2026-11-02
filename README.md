@@ -2,8 +2,10 @@
 
 Statische Webseite (eine einzige `index.html`, ohne Datenbank oder Backend) für den Lebendigen Adventskalender der Evangelischen Kirchengemeinde Seeregion Friedrichshafen.
 
-- Zeigt oben das **heutige Türchen** (1.–23. Dezember). Außerhalb dieses Zeitraums erscheint eine **Vorschau auf den 1. Dezember**.
-- Darunter alle 23 Abende: **frei** (mit Link zum Anfragen per E-Mail) oder **vergeben** (mit Gastgeber und Ort). Der heutige Tag ist golden markiert.
+- Ganz oben steht groß das **heutige Fenster** mit Gastgeber, Adresse und „Weg anzeigen“. Vor dem 1. Dezember zeigt die Seite den ersten Abend, nach dem 23. Dezember einen Dank.
+- Darunter **„Als Nächstes“**: die drei folgenden Abende mit Gastgeber.
+- Darunter **„Der Kalender“**: 23 Türchen in gemischter Reihenfolge. Vergangene Türchen stehen offen, das heutige öffnet sich beim Laden. Antippen zeigt Gastgeber, Adresse und Notiz.
+- Weitere Infos (Ablauf, selbst Gastgeber werden, alle 23 Abende, Kontakt) liegen in aufklappbaren Abschnitten. Die Texte dafür stehen direkt im HTML und können dort angepasst werden.
 
 ## Belegung pflegen (Google-Tabelle)
 
@@ -18,11 +20,13 @@ Die Seite liest die Belegung aus einer veröffentlichten Google-Tabelle. Pflegen
 ### Im Alltag
 
 - Ein Abend gilt als **vergeben**, sobald in der Spalte `Gastgeber` etwas steht. Leeren Gastgeber = Abend ist wieder frei.
-- Weitere Spalten (z. B. `Notiz`, `Telefon`) sind erlaubt und werden auf der Seite **nicht** angezeigt. Gut für interne Infos.
+- Die optionale Spalte `Notiz` wird auf der Seite beim jeweiligen Abend angezeigt (z. B. „Bitte durch den Hof, Eingang links“ oder „Mit Kinderpunsch“).
+- Ist keine `Adresse` eingetragen, erscheint auch kein „Weg anzeigen“-Button.
+- Weitere Spalten (z. B. `Telefon`) sind erlaubt und werden **nicht** angezeigt. Gut für interne Infos.
 - Änderungen erscheinen nach ein paar Minuten auf der Seite (Google aktualisiert die veröffentlichte Fassung mit kurzer Verzögerung).
 - Zum Bearbeiten die Tabelle einfach mit den Personen teilen, die pflegen sollen.
 
-Wichtig: Die veröffentlichte Tabelle kann jeder mit dem Link lesen. Darum keine privaten Daten hineinschreiben, die nicht ohnehin auf der Seite stehen sollen. Notizen gehören besser in ein zweites, nicht veröffentlichtes Tabellenblatt.
+Wichtig: Die veröffentlichte Tabelle kann jeder mit dem Link lesen. Darum keine privaten Daten hineinschreiben, die nicht ohnehin auf der Seite stehen sollen. Auch die Spalte `Notiz` ist öffentlich. Interne Infos gehören in ein zweites, nicht veröffentlichtes Tabellenblatt.
 
 ### Ersatzdaten
 
