@@ -310,6 +310,171 @@
             color: var(--faint);
         }
 
+        .hero-hostnote {
+            font-size: 17px;
+            font-family: var(--serif);
+            font-style: italic;
+            margin: 10px 0 8px;
+        }
+
+        /* ---------- Türchen ---------- */
+        .cal { margin: 40px 0 0; }
+
+        .cal-intro {
+            color: var(--muted);
+            margin: -4px 0 16px;
+        }
+
+        .doors {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 84px;
+            grid-auto-flow: dense;
+            gap: 8px;
+        }
+
+        @media (min-width: 640px) {
+            .doors {
+                grid-template-columns: repeat(7, 1fr);
+                grid-auto-rows: 92px;
+            }
+        }
+
+        .door {
+            position: relative;
+            border: 0;
+            padding: 0;
+            margin: 0;
+            background: transparent;
+            perspective: 700px;
+            cursor: pointer;
+            font: inherit;
+            color: inherit;
+            text-align: left;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .door.wide { grid-column: span 2; }
+
+        .door .inside,
+        .door .flap {
+            position: absolute;
+            inset: 0;
+            border-radius: 10px;
+        }
+
+        .door .inside {
+            background: var(--accent-soft);
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            font-size: 12px;
+            line-height: 1.3;
+            color: var(--ink);
+            overflow: hidden;
+        }
+
+        .door .inside .who {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            padding-left: 12px;
+        }
+
+        .door .inum {
+            position: absolute;
+            top: 7px;
+            right: 10px;
+            font-family: var(--serif);
+            font-size: 17px;
+            color: var(--muted);
+        }
+
+        .door.today .inum { color: var(--today); }
+
+        .door .flap {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            padding: 8px 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transform-origin: left center;
+            transition: transform .9s cubic-bezier(.2, .7, .2, 1), box-shadow .2s;
+            backface-visibility: hidden;
+            box-shadow: 0 1px 0 rgba(0,0,0,.03);
+        }
+
+        .door .num {
+            font-family: var(--serif);
+            font-size: 28px;
+            font-weight: 500;
+            line-height: 1;
+        }
+
+        .door .mark {
+            align-self: flex-end;
+            font-size: 11px;
+            font-weight: 500;
+            color: var(--free);
+        }
+
+        /* Kleiner Knauf */
+        .door .flap::after {
+            content: "";
+            position: absolute;
+            right: 9px;
+            top: 50%;
+            width: 5px;
+            height: 5px;
+            border-radius: 50%;
+            background: var(--line);
+        }
+
+        .door:hover .flap { box-shadow: 0 6px 16px rgba(0,0,0,.08); }
+
+        .door.open .flap { transform: rotateY(-78deg); }
+        .door.past .inside { opacity: .75; }
+
+        .door.today .inside { background: var(--today-soft); }
+        .door.today .flap { border-color: var(--today); }
+        .door.today .num { color: var(--today); }
+
+        .door { border-radius: 12px; }
+        .door.selected { outline: 2px solid var(--ink); outline-offset: 3px; }
+        .door:focus-visible { outline: 2px solid var(--today); outline-offset: 3px; }
+
+        .door-detail {
+            margin-top: 14px;
+            padding: 18px 20px;
+            border-radius: 12px;
+            background: var(--surface);
+            border: 1px solid var(--line);
+        }
+
+        .door-detail:empty { display: none; }
+
+        .door-detail .dd-when {
+            font-size: 14px;
+            color: var(--muted);
+            margin: 0 0 4px;
+        }
+
+        .door-detail h3 {
+            font-family: var(--serif);
+            font-weight: 500;
+            font-size: 24px;
+            margin: 0 0 4px;
+        }
+
+        .door-detail p { margin: 0 0 4px; }
+        .door-detail .dd-note { font-family: var(--serif); font-style: italic; }
+        .door-detail .dd-muted { color: var(--muted); }
+        .door-detail .hero-actions { margin-top: 12px; }
+        .door-detail .btn { padding: 10px 16px; font-size: 14px; }
+
         @media (max-width: 600px) {
             .topbar { padding: 18px 0 14px; }
             .hero { padding: 28px 22px 24px; }
@@ -319,7 +484,7 @@
         }
 
         @media (prefers-reduced-motion: reduce) {
-            .btn, summary::after { transition: none; }
+            .btn, summary::after, .door .flap { transition: none; }
         }
     </style>
 </head>
@@ -340,6 +505,13 @@
             <section class="next" id="next" aria-labelledby="nextTitle" hidden>
                 <h2 id="nextTitle">Als Nächstes</h2>
                 <ol id="nextList"></ol>
+            </section>
+
+            <section class="cal" aria-labelledby="calTitle">
+                <h2 class="section-title" id="calTitle">Der Kalender</h2>
+                <p class="cal-intro">Jeden Abend öffnet sich ein Türchen. Tipp eins an, um zu sehen, wer dahinter wartet.</p>
+                <div class="doors" id="doors" role="list"></div>
+                <div class="door-detail" id="doorDetail" aria-live="polite"></div>
             </section>
 
             <section class="more">
@@ -471,14 +643,18 @@
         function sheetToCalendar(rows) {
             const header = rows[0].map(h => h.trim().toLowerCase());
             const col = name => header.indexOf(name);
-            const iDay = col("tag"), iHost = col("gastgeber"), iAddr = col("adresse");
+            const iDay = col("tag"), iHost = col("gastgeber"), iAddr = col("adresse"), iNote = col("notiz");
             if (iDay < 0 || iHost < 0 || iAddr < 0) throw new Error("Spalten Tag, Gastgeber, Adresse fehlen");
             const byDay = new Map();
             rows.slice(1).forEach(r => {
                 const day = parseInt(r[iDay], 10);
                 if (day >= 1 && day <= 23) {
                     const host = (r[iHost] || "").trim();
-                    byDay.set(day, { day, booked: host !== "", host, address: (r[iAddr] || "").trim() });
+                    byDay.set(day, {
+                        day, booked: host !== "", host,
+                        address: (r[iAddr] || "").trim(),
+                        note: iNote >= 0 ? (r[iNote] || "").trim() : ""
+                    });
                 }
             });
             return Array.from({ length: 23 }, (_, i) =>
@@ -531,6 +707,7 @@
                     <p class="hero-when">${when}</p>
                     <h1>${escapeHtml(t.host)}</h1>
                     ${t.address ? `<p class="hero-where">${escapeHtml(t.address)}</p>` : ""}
+                    ${t.note ? `<p class="hero-hostnote">${escapeHtml(t.note)}</p>` : ""}
                     <p class="hero-note">Draußen vor dem Fenster, etwa 20 bis 30 Minuten. Bring deine Tasse mit!</p>
                     ${t.address ? `<div class="hero-actions"><a class="btn" href="${mapsLink(t.address)}" target="_blank" rel="noopener">Weg anzeigen</a></div>` : ""}`;
             } else {
@@ -560,6 +737,9 @@
                 nextSection.hidden = true;
             }
 
+            // ----- Türchen -----
+            renderDoors(data, { isAdventDay, isOver, currentDay });
+
             // ----- Zusammenfassungen -----
             const freeDays = data.filter(x => !x.booked && !(isAdventDay && x.day < currentDay) && !isOver);
             const bookedCount = data.filter(x => x.booked).length;
@@ -588,6 +768,83 @@
                 }
                 return `<li class="${cls}"><span class="d">${dateLabel(x.day)}${today ? " · heute" : ""}</span><span>${body}</span></li>`;
             }).join("");
+        }
+
+        // Feste, "gemischte" Reihenfolge wie bei einem echten Adventskalender.
+        // Breite Türchen: 1 (Start), 6 (Nikolaus), 12, 18 und 23 (letzter Abend).
+        const DOOR_ORDER = [7, 15, 1, 22, 10, 4, 18, 12, 3, 20, 9, 14, 6, 23, 11, 2, 17, 8, 21, 5, 13, 19, 16];
+        const WIDE_DOORS = new Set([1, 6, 12, 18, 23]);
+
+        function doorDetailHtml(x, state) {
+            const when = `${dateLabel(x.day, true)} · 18:00 Uhr${state.today ? " · heute" : ""}`;
+            if (x.booked) {
+                return `
+                    <p class="dd-when">${when}</p>
+                    <h3>${escapeHtml(x.host)}</h3>
+                    ${x.address ? `<p>${escapeHtml(x.address)}</p>` : ""}
+                    ${x.note ? `<p class="dd-note">${escapeHtml(x.note)}</p>` : ""}
+                    ${x.address && !state.past ? `<div class="hero-actions"><a class="btn ghost" href="${mapsLink(x.address)}" target="_blank" rel="noopener">Weg anzeigen</a></div>` : ""}`;
+            }
+            if (state.past) {
+                return `<p class="dd-when">${when}</p><h3>Kein Termin</h3><p class="dd-muted">An diesem Abend war keine Tür offen.</p>`;
+            }
+            return `
+                <p class="dd-when">${when}</p>
+                <h3>Hinter diesem Türchen ist noch niemand</h3>
+                <p class="dd-muted">Magst du an diesem Abend deine Tür öffnen?</p>
+                <div class="hero-actions"><a class="btn" href="${requestLink(x.day)}">Abend übernehmen</a></div>`;
+        }
+
+        function renderDoors(data, { isAdventDay, isOver, currentDay }) {
+            const grid = document.getElementById("doors");
+            const detail = document.getElementById("doorDetail");
+            const byDay = new Map(data.map(x => [x.day, x]));
+
+            const stateOf = day => ({
+                past: isOver || (isAdventDay && day < currentDay),
+                today: isAdventDay && day === currentDay
+            });
+
+            grid.innerHTML = DOOR_ORDER.map(day => {
+                const x = byDay.get(day);
+                const st = stateOf(day);
+                const open = st.past || st.today;
+                const cls = ["door", WIDE_DOORS.has(day) ? "wide" : "", st.past ? "past" : "", st.today ? "today" : "", open && !st.today ? "open" : ""].join(" ").replace(/\s+/g, " ").trim();
+                const label = `${day}. Dezember: ${x.booked ? x.host : (st.past ? "kein Termin" : "noch frei")}`;
+                const inside = x.booked ? escapeHtml(x.host) : (st.past ? "–" : "");
+                const mark = !x.booked && !st.past ? `<span class="mark">frei</span>` : "";
+                return `
+                    <button type="button" class="${cls}" data-day="${day}" role="listitem" aria-label="${escapeHtml(label)}">
+                        <span class="inside"><span class="inum">${day}</span><span class="who">${inside}</span></span>
+                        <span class="flap"><span class="num">${day}</span>${mark}</span>
+                    </button>`;
+            }).join("");
+
+            function select(day) {
+                grid.querySelectorAll(".door").forEach(d => {
+                    const sel = Number(d.dataset.day) === day;
+                    d.classList.toggle("selected", sel);
+                    d.setAttribute("aria-pressed", sel ? "true" : "false");
+                    if (!sel && !d.classList.contains("past") && !d.classList.contains("today")) d.classList.remove("open");
+                });
+                const door = grid.querySelector(`[data-day="${day}"]`);
+                if (door && !door.classList.contains("past") && !door.classList.contains("today")) {
+                    door.classList.add("open");
+                }
+                detail.innerHTML = doorDetailHtml(byDay.get(day), stateOf(day));
+            }
+
+            grid.addEventListener("click", e => {
+                const door = e.target.closest(".door");
+                if (door) select(Number(door.dataset.day));
+            });
+
+            // Heutiges Türchen öffnet sich nach dem Laden von selbst
+            if (isAdventDay) {
+                const todayDoor = grid.querySelector(".door.today");
+                requestAnimationFrame(() => setTimeout(() => todayDoor && todayDoor.classList.add("open"), 400));
+                select(currentDay);
+            }
         }
 
         document.addEventListener("DOMContentLoaded", async () => {
