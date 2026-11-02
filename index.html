@@ -468,7 +468,10 @@
 
     <script>
         /* =====================================================================
-           HIER PFLEGEN: Belegung der 23 Abende
+           BELEGUNG
+           Normalerweise kommt die Belegung aus der Google-Tabelle (siehe
+           SHEET_CSV_URL weiter unten und README). Die Liste hier ist nur der
+           Ersatz, falls keine Tabelle eingetragen oder sie nicht erreichbar ist.
            - booked: true  -> Abend ist vergeben, host + address werden angezeigt
            - booked: false -> Abend ist frei, mit Link zum Anfragen per E-Mail
            Beispiel:
@@ -503,6 +506,10 @@
         const CONTACT_EMAIL = "Sylvia.Noelke@elkw.de";
         const EVENT_YEAR = 2026;
 
+        // Link zur als CSV veröffentlichten Google-Tabelle (Datei → Freigeben →
+        // Im Web veröffentlichen → CSV). Leer lassen, um nur calendarData zu nutzen.
+        const SHEET_CSV_URL = "";
+
         const WEEKDAYS = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
 
         // Text sicher in HTML einsetzen (Namen/Adressen mit &, <, " usw.)
@@ -524,7 +531,59 @@
             return WEEKDAYS[new Date(EVENT_YEAR, 11, day).getDay()];
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
+        // Einfacher CSV-Parser (unterstützt Anführungszeichen, Kommas und Zeilenumbrüche in Feldern)
+        function parseCsv(text) {
+            const rows = [];
+            let row = [], field = "", inQuotes = false;
+            for (let i = 0; i < text.length; i++) {
+                const c = text[i];
+                if (inQuotes) {
+                    if (c === '"' && text[i + 1] === '"') { field += '"'; i++; }
+                    else if (c === '"') inQuotes = false;
+                    else field += c;
+                } else if (c === '"') inQuotes = true;
+                else if (c === ",") { row.push(field); field = ""; }
+                else if (c === "\n" || c === "\r") {
+                    if (c === "\r" && text[i + 1] === "\n") i++;
+                    row.push(field); rows.push(row); row = []; field = "";
+                } else field += c;
+            }
+            if (field !== "" || row.length) { row.push(field); rows.push(row); }
+            return rows;
+        }
+
+        // Tabelle mit Spalten "Tag", "Gastgeber", "Adresse" in calendarData-Form bringen.
+        // Ein Abend gilt als vergeben, sobald ein Gastgeber eingetragen ist.
+        function sheetToCalendar(rows) {
+            const header = rows[0].map(h => h.trim().toLowerCase());
+            const col = name => header.indexOf(name);
+            const iDay = col("tag"), iHost = col("gastgeber"), iAddr = col("adresse");
+            if (iDay < 0 || iHost < 0 || iAddr < 0) throw new Error("Spalten Tag, Gastgeber, Adresse fehlen");
+            const byDay = new Map();
+            rows.slice(1).forEach(r => {
+                const day = parseInt(r[iDay], 10);
+                if (day >= 1 && day <= 23) {
+                    const host = (r[iHost] || "").trim();
+                    byDay.set(day, { day, booked: host !== "", host, address: (r[iAddr] || "").trim() });
+                }
+            });
+            return Array.from({ length: 23 }, (_, i) =>
+                byDay.get(i + 1) || { day: i + 1, booked: false, host: "", address: "" });
+        }
+
+        async function loadData() {
+            if (!SHEET_CSV_URL) return calendarData;
+            try {
+                const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+                if (!res.ok) throw new Error("HTTP " + res.status);
+                return sheetToCalendar(parseCsv(await res.text()));
+            } catch (err) {
+                console.warn("Google-Tabelle nicht lesbar, nutze calendarData:", err);
+                return calendarData;
+            }
+        }
+
+        function render(calendarData) {
             const now = new Date();
             const inDecember = now.getFullYear() === EVENT_YEAR && now.getMonth() === 11;
             const isAdventDay = inDecember && now.getDate() >= 1 && now.getDate() <= 23;
@@ -580,6 +639,10 @@
                         <div>${content}</div>
                     </li>`;
             }).join("");
+        }
+
+        document.addEventListener("DOMContentLoaded", async () => {
+            render(await loadData());
         });
     </script>
 </body>

@@ -3,24 +3,30 @@
 Statische Webseite (eine einzige `index.html`, ohne Datenbank oder Backend) für den Lebendigen Adventskalender der Evangelischen Kirchengemeinde Seeregion Friedrichshafen.
 
 - Zeigt oben das **heutige Türchen** (1.–23. Dezember). Außerhalb dieses Zeitraums erscheint eine **Vorschau auf den 1. Dezember**.
-- Darunter das Raster aller 23 Tage: **grün = frei** (mit „Diesen Tag anfragen“-Button per E-Mail), **rot = vergeben** (mit Gastgeber und Ort). Der heutige Tag ist zusätzlich golden markiert.
+- Darunter alle 23 Abende: **frei** (mit Link zum Anfragen per E-Mail) oder **vergeben** (mit Gastgeber und Ort). Der heutige Tag ist golden markiert.
 
-## Belegung pflegen
+## Belegung pflegen (Google-Tabelle)
 
-Alle Daten stehen in `index.html` im Block `calendarData` (ganz unten im `<script>`). Um einen Tag als vergeben einzutragen, die passende Zeile ändern:
+Die Seite liest die Belegung aus einer veröffentlichten Google-Tabelle. Pflegen geht damit ohne GitHub, auch vom Handy aus.
 
-```js
-{ day: 5, booked: true, host: "Familie Muster", address: "Seestraße 1, Friedrichshafen" },
-```
+### Einmalig einrichten
 
-Um einen Tag wieder freizugeben: `booked: false` und `host`/`address` leeren.
+1. In Google Drive eine neue Tabelle anlegen und `vorlage.csv` aus diesem Repo importieren (Datei → Importieren → Hochladen → „Aktuelle Tabelle ersetzen“). Alternativ die erste Zeile von Hand anlegen: `Tag`, `Gastgeber`, `Adresse`, darunter die Tage 1 bis 23.
+2. Datei → Freigeben → **Im Web veröffentlichen**. Dort das richtige Tabellenblatt und als Format **Kommagetrennte Werte (.csv)** wählen, dann „Veröffentlichen“.
+3. Den angezeigten Link kopieren (er endet auf `output=csv`) und in `index.html` bei `SHEET_CSV_URL = "..."` eintragen. Das ist die einzige Änderung am Code.
 
-Hinweise:
-- Texte immer in `"Anführungszeichen"`, Zeilen mit Komma trennen.
-- Sonderzeichen wie `&` oder `"` in Namen sind unproblematisch, sie werden sicher dargestellt. Ein `"` innerhalb eines Textes muss als `\"` geschrieben werden.
-- Die Kontakt-E-Mail für die Anfrage-Buttons steht in `CONTACT_EMAIL` direkt unter `calendarData`.
+### Im Alltag
 
-Bearbeiten geht direkt auf GitHub: Datei `index.html` öffnen → Stift-Symbol („Edit“) → ändern → „Commit changes“. Nach ca. 1 Minute ist die Seite aktualisiert.
+- Ein Abend gilt als **vergeben**, sobald in der Spalte `Gastgeber` etwas steht. Leeren Gastgeber = Abend ist wieder frei.
+- Weitere Spalten (z. B. `Notiz`, `Telefon`) sind erlaubt und werden auf der Seite **nicht** angezeigt. Gut für interne Infos.
+- Änderungen erscheinen nach ein paar Minuten auf der Seite (Google aktualisiert die veröffentlichte Fassung mit kurzer Verzögerung).
+- Zum Bearbeiten die Tabelle einfach mit den Personen teilen, die pflegen sollen.
+
+Wichtig: Die veröffentlichte Tabelle kann jeder mit dem Link lesen. Darum keine privaten Daten hineinschreiben, die nicht ohnehin auf der Seite stehen sollen. Notizen gehören besser in ein zweites, nicht veröffentlichtes Tabellenblatt.
+
+### Ersatzdaten
+
+Ist `SHEET_CSV_URL` leer oder die Tabelle nicht erreichbar, nutzt die Seite die Liste `calendarData` in `index.html`. Sie kann leer bleiben oder als Notfall-Stand gepflegt werden. Die Kontakt-E-Mail für die Anfrage-Links steht in `CONTACT_EMAIL`.
 
 ## Lokal ansehen
 
