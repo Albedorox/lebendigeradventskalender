@@ -2,8 +2,9 @@
 
 Statische Webseite (eine einzige `index.html`, ohne Datenbank oder Backend) für den Lebendigen Adventskalender der Evangelischen Kirchengemeinde Seeregion Friedrichshafen.
 
-- Zeigt oben das **heutige Türchen** (1.–23. Dezember). Außerhalb dieses Zeitraums erscheint eine **Vorschau auf den 1. Dezember**.
-- Darunter alle 23 Abende: **frei** (mit Link zum Anfragen per E-Mail) oder **vergeben** (mit Gastgeber und Ort). Der heutige Tag ist golden markiert.
+- Ganz oben steht groß das **heutige Fenster** mit Gastgeber, Adresse und „Weg anzeigen“. Vor dem 1. Dezember zeigt die Seite den ersten Abend, nach dem 23. Dezember einen Dank.
+- Darunter **„Als Nächstes“**: die drei folgenden Abende mit Gastgeber.
+- Weitere Infos (Ablauf, selbst Gastgeber werden, alle 23 Abende, Kontakt) liegen in aufklappbaren Abschnitten. Die Texte dafür stehen direkt im HTML und können dort angepasst werden.
 
 ## Belegung pflegen (Google-Tabelle)
 
