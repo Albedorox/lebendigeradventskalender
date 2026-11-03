@@ -32,6 +32,31 @@ Wichtig: Die veröffentlichte Tabelle kann jeder mit dem Link lesen. Darum keine
 
 Ist `SHEET_CSV_URL` leer oder die Tabelle nicht erreichbar, nutzt die Seite die Liste `calendarData` in `index.html`. Sie kann leer bleiben oder als Notfall-Stand gepflegt werden. Die Kontakt-E-Mail für die Anfrage-Links steht in `CONTACT_EMAIL`.
 
+## Adressen schützen (Passwort)
+
+Die veröffentlichte Google-Tabelle ist für jeden lesbar. Damit Adressen nicht offen im Internet stehen, kann die Seite ihre Daten stattdessen über ein kleines **Google Apps Script** holen:
+
+- Ohne Passwort zeigt die Seite Gastgeber, **Ortsteil** und Notiz.
+- Mit dem Gemeinde-Passwort (z. B. aus Gemeindebrief oder Flyer) erscheint zusätzlich die genaue **Adresse** mit „Weg anzeigen“. Das Passwort merkt sich der Browser.
+- Die Tabelle selbst ist dann **nicht** mehr veröffentlicht. Das Script prüft das Passwort auf Googles Servern, die Adressen kommen nie ohne Passwort zur Seite.
+
+### Einmalig einrichten (ca. 10 Minuten, am besten am Computer)
+
+1. **Tabelle vorbereiten:** Im ersten Tabellenblatt die Spalten `Tag`, `Gastgeber`, `Ortsteil`, `Adresse`, `Notiz` anlegen (siehe `vorlage.csv`). `Ortsteil` ist das, was alle sehen, z. B. „Fischbach, Nähe Kirche“.
+2. **Script einfügen:** In der Tabelle Erweiterungen → Apps Script. Den Inhalt von `apps-script/Code.gs` aus diesem Repo hineinkopieren (vorhandenen Code ersetzen) und speichern.
+3. **Passwort festlegen:** Links auf das Zahnrad (Projekteinstellungen) → ganz unten „Script-Eigenschaft hinzufügen“: Name `PASSWORT`, Wert z. B. `Adventsstern`. Groß-/Kleinschreibung spielt keine Rolle.
+4. **Veröffentlichen:** Oben rechts Bereitstellen → Neue Bereitstellung → Typ „Web-App“. Ausführen als: **Ich**. Zugriff: **Jeder**. Bereitstellen, Zugriff erlauben und die angezeigte **Web-App-URL** kopieren (endet auf `/exec`).
+5. **Seite umstellen:** Die URL in `index.html` bei `DATA_API_URL = "..."` eintragen (oder an Claude schicken).
+6. **Alte Veröffentlichung beenden:** In der Tabelle Datei → Freigeben → Im Web veröffentlichen → **Veröffentlichung beenden**. Erst jetzt sind die Adressen wirklich nicht mehr öffentlich.
+
+Änderungen an der Tabelle sind danach sofort auf der Seite sichtbar. Wird das Script-Code später geändert, muss unter Bereitstellen → Bereitstellungen verwalten eine neue Version bereitgestellt werden (die URL bleibt gleich).
+
+Hinweise:
+- Ein Passwort, das auf einem Flyer steht, schützt vor Suchmaschinen und Fremden, nicht vor jedem Gemeindemitglied. Das ist so gewollt.
+- Nach 30 falschen Versuchen innerhalb von 10 Minuten nimmt das Script kurz keine Passwörter an. So kann niemand einfach durchprobieren.
+- Auch Namen sind personenbezogene Daten. Am besten holt man von allen Gastgebern eine kurze Einwilligung ein, was online stehen darf.
+- Den Hinweistext, wo man das Passwort bekommt, ändert man in `index.html` bei `PASSWORD_HINT`.
+
 ## Lokal ansehen
 
 `index.html` einfach im Browser öffnen (Doppelklick). Ein Server ist nicht nötig.
