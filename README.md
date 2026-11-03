@@ -43,7 +43,7 @@ Zum Testen eines bestimmten Tages kann man vorübergehend in `index.html` die Ze
 1. Im Repository auf **Settings → Pages** gehen.
 2. Unter **Build and deployment** bei *Source* „Deploy from a branch“ wählen.
 3. Branch `main` und Ordner `/ (root)` auswählen, **Save**.
-4. Nach 1–2 Minuten ist die Seite unter `https://<github-name>.github.io/<repo-name>/` erreichbar. Die Adresse steht auch oben auf der Pages-Einstellungsseite.
+4. Nach 1–2 Minuten ist die Seite erreichbar. Eigene Adresse: **https://adventskalender.ev-fn.de** (DNS: CNAME `adventskalender` → `albedorox.github.io`, festgelegt in der Datei `CNAME`; `albedorox.github.io/lebendigeradventskalender/` leitet dorthin weiter).
 
 Jede Änderung an `index.html` auf `main` wird automatisch neu veröffentlicht.
 
