@@ -4,7 +4,7 @@ Statische Webseite (eine einzige `index.html`, ohne Datenbank oder Backend) für
 
 - Ganz oben steht groß das **heutige Fenster** mit Gastgeber, Adresse und „Weg anzeigen“. Vor dem 1. Dezember zeigt die Seite den ersten Abend, nach dem 23. Dezember einen Dank.
 - Darunter **„Als Nächstes“**: die drei folgenden Abende mit Gastgeber.
-- Darunter **„Der Kalender“**: 23 Türchen in gemischter Reihenfolge. Vergangene Türchen stehen offen, das heutige öffnet sich beim Laden. Antippen zeigt Gastgeber, Adresse und Notiz.
+- Darunter **„Der Kalender“**: 23 gleich große Türchen von 1 bis 23 mit Wochentag, Gastgeber und Ort. Vergangene Tage sind abgeschwächt, heute ist golden markiert. Antippen zeigt direkt darunter Notiz und „Weg anzeigen“.
 - Weitere Infos (Ablauf, selbst Gastgeber werden, alle 23 Abende, Kontakt) liegen in aufklappbaren Abschnitten. Die Texte dafür stehen direkt im HTML und können dort angepasst werden.
 
 ## Belegung pflegen (Google-Tabelle)
