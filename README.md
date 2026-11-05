@@ -48,3 +48,11 @@ Zum Testen eines bestimmten Tages kann man vorübergehend in `index.html` die Ze
 Jede Änderung an `index.html` auf `main` wird automatisch neu veröffentlicht.
 
 Alternative: Netlify (Ordner per Drag & Drop auf app.netlify.com/drop ziehen).
+
+## Version und Footer
+
+Im Footer stehen Copyright, Links zu Impressum und Datenschutz der Gemeinde-Website und eine kleine Versionsnummer. Bei größeren Änderungen in `index.html` die Zeile `Version … · Stand …` anpassen.
+
+## Schriften
+
+Newsreader und Inter liegen im Ordner `fonts/` (Lizenz: SIL Open Font License 1.1) und werden direkt von dieser Seite geladen. So werden beim Aufruf keine Daten an Google Fonts übertragen.

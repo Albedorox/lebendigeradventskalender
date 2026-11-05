@@ -6,10 +6,30 @@
     <title>Lebendiger Adventskalender – Ev. Kirchengemeinde Seeregion Friedrichshafen</title>
     <meta name="description" content="Lebendiger Adventskalender der Evangelischen Kirchengemeinde Seeregion Friedrichshafen: jeden Abend vom 1. bis 23. Dezember um 18:00 Uhr vor einem anderen Fenster.">
     <meta name="theme-color" content="#f6f1e9">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400;1,6..72,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        /* Schriften liegen im Repo (Ordner fonts/), damit keine Daten an Google Fonts gehen. */
+        @font-face {
+            font-family: 'Inter';
+            font-style: normal;
+            font-weight: 400 600;
+            font-display: swap;
+            src: url(fonts/inter-latin.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Newsreader';
+            font-style: normal;
+            font-weight: 400 500;
+            font-display: swap;
+            src: url(fonts/newsreader-latin.woff2) format('woff2');
+        }
+        @font-face {
+            font-family: 'Newsreader';
+            font-style: italic;
+            font-weight: 400 500;
+            font-display: swap;
+            src: url(fonts/newsreader-italic-latin.woff2) format('woff2');
+        }
+
         :root {
             --bg: #f6f1e9;
             --surface: #fffdf9;
@@ -308,6 +328,29 @@
             padding: 40px 0 56px;
             font-size: 13px;
             color: var(--faint);
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 8px 20px;
+        }
+
+        footer nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4px 16px;
+        }
+
+        footer a {
+            color: var(--muted);
+            text-decoration: none;
+        }
+
+        footer a:hover { text-decoration: underline; }
+
+        footer .version {
+            font-size: 11px;
+            opacity: .8;
+            font-variant-numeric: tabular-nums;
         }
 
         .hero-hostnote {
@@ -551,7 +594,16 @@
             </section>
         </main>
 
-        <footer>Evangelische Kirchengemeinde Seeregion Friedrichshafen · Advent 2026</footer>
+        <footer>
+            <div>
+                <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
+                <div class="version">Version 1.5.0 · Stand 05.11.2026</div>
+            </div>
+            <nav aria-label="Rechtliches">
+                <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
+                <a href="https://www.evkirche-seeregion-fn.de/meta/datenschutz" target="_blank" rel="noopener">Datenschutz</a>
+            </nav>
+        </footer>
     </div>
 
     <script>
