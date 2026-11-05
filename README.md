@@ -4,7 +4,7 @@ Statische Webseite (eine einzige `index.html`, ohne Datenbank oder Backend) für
 
 - Ganz oben steht groß das **heutige Fenster** mit Gastgeber, Adresse und „Weg anzeigen“. Vor dem 1. Dezember zeigt die Seite den ersten Abend, nach dem 23. Dezember einen Dank.
 - Darunter **„Als Nächstes“**: die drei folgenden Abende mit Gastgeber.
-- Darunter **„Der Kalender“**: 23 Türchen in gemischter Reihenfolge. Vergangene Türchen stehen offen, das heutige öffnet sich beim Laden. Antippen zeigt Gastgeber, Adresse und Notiz.
+- Darunter **„Der Kalender“**: 23 gleich große Türchen von 1 bis 23 mit Wochentag, Gastgeber und Ort. Vergangene Tage sind abgeschwächt, heute ist golden markiert. Antippen zeigt direkt darunter Notiz und „Weg anzeigen“.
 - Weitere Infos (Ablauf, selbst Gastgeber werden, alle 23 Abende, Kontakt) liegen in aufklappbaren Abschnitten. Die Texte dafür stehen direkt im HTML und können dort angepasst werden.
 
 ## Belegung pflegen (Google-Tabelle)
@@ -73,3 +73,11 @@ Zum Testen eines bestimmten Tages kann man vorübergehend in `index.html` die Ze
 Jede Änderung an `index.html` auf `main` wird automatisch neu veröffentlicht.
 
 Alternative: Netlify (Ordner per Drag & Drop auf app.netlify.com/drop ziehen).
+
+## Version und Footer
+
+Im Footer stehen Copyright, Links zu Impressum und Datenschutz der Gemeinde-Website und eine kleine Versionsnummer. Bei größeren Änderungen in `index.html` die Zeile `Version … · Stand …` anpassen.
+
+## Schriften
+
+Newsreader und Inter liegen im Ordner `fonts/` (Lizenz: SIL Open Font License 1.1) und werden direkt von dieser Seite geladen. So werden beim Aufruf keine Daten an Google Fonts übertragen.
