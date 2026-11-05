@@ -646,7 +646,7 @@
         <footer>
             <div>
                 <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
-                <div class="version">Version 1.6.0 · Stand 05.11.2026</div>
+                <div class="version">Version 1.7.0 · Stand 05.11.2026</div>
             </div>
             <nav aria-label="Rechtliches">
                 <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
@@ -1044,10 +1044,11 @@
                 }
             }
 
-            grid.addEventListener("click", e => {
+            // onclick statt addEventListener: render() läuft nach dem Freischalten erneut
+            grid.onclick = e => {
                 const door = e.target.closest(".door");
                 if (door) select(Number(door.dataset.day), true);
-            });
+            };
         }
 
         // Freischalten der Adressen (Button -> Formular -> Abfrage)
