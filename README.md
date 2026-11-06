@@ -72,6 +72,8 @@ Zum Testen eines bestimmten Tages kann man vorübergehend in `index.html` die Ze
 
 Jede Änderung an `index.html` auf `main` wird automatisch neu veröffentlicht.
 
+Falls eine Änderung nicht auf der Seite ankommt: unter **Actions** nachsehen, ob „pages build and deployment“ fehlgeschlagen ist oder hängt. Meist ist das eine Störung bei GitHub (githubstatus.com). Ein neuer Commit auf `main` startet die Veröffentlichung frisch.
+
 Alternative: Netlify (Ordner per Drag & Drop auf app.netlify.com/drop ziehen).
 
 ## Version und Footer
