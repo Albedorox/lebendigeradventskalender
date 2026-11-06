@@ -360,6 +360,48 @@
             margin: 10px 0 8px;
         }
 
+        button.btn { border: 0; cursor: pointer; }
+        button.btn.ghost { border: 1px solid var(--line); }
+
+        .unlock {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: var(--bg);
+            border: 1px solid var(--line);
+        }
+
+        .unlock label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .unlock-row {
+            display: flex;
+            gap: 8px;
+        }
+
+        .unlock input {
+            flex: 1;
+            min-width: 0;
+            font: 16px var(--sans);
+            padding: 10px 14px;
+            border-radius: 999px;
+            border: 1px solid var(--line);
+            background: var(--surface);
+            color: var(--ink);
+        }
+
+        .unlock input:focus { outline: 2px solid var(--today); outline-offset: 1px; }
+
+        .unlock-msg {
+            font-size: 13px;
+            color: var(--muted);
+            margin: 8px 0 0;
+        }
+
         /* ---------- Türchen ---------- */
         .cal { margin: 40px 0 0; }
 
@@ -604,7 +646,7 @@
         <footer>
             <div>
                 <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
-                <div class="version">Version 1.6.0 · Stand 05.11.2026</div>
+                <div class="version">Version 1.7.0 · Stand 05.11.2026</div>
             </div>
             <nav aria-label="Rechtliches">
                 <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
@@ -653,6 +695,13 @@
 
         // Link zur als CSV veröffentlichten Google-Tabelle (Datei → Freigeben →
         // Im Web veröffentlichen → CSV). Leer lassen, um nur calendarData zu nutzen.
+        // Geschützte Datenquelle (Google Apps Script, siehe README "Adressen schützen").
+        // Ist sie gesetzt, wird SHEET_CSV_URL nicht mehr benutzt und Adressen gibt es nur mit Passwort.
+        const DATA_API_URL = "";
+
+        // Hinweis, wo man die Adresse bekommt, falls jemand das Passwort nicht kennt.
+        const PASSWORD_HINT = "Das Passwort steht im Gemeindebrief und auf dem Flyer. Du bekommst es auch bei Pfarrerin Sylvia Nölke.";
+
         const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQm6ZW0xQGvLO7bE6JX-SVmXdaHR73-Y0hBOtHyhkhSwsK8gMGgBnzGNqj3XTqCWF1nFnd9MHFUQDan/pub?output=csv";
 
         const WEEKDAYS = ["Sonntag", "Montag", "Dienstag", "Mittwoch", "Donnerstag", "Freitag", "Samstag"];
@@ -702,8 +751,8 @@
         function sheetToCalendar(rows) {
             const header = rows[0].map(h => h.trim().toLowerCase());
             const col = name => header.indexOf(name);
-            const iDay = col("tag"), iHost = col("gastgeber"), iAddr = col("adresse"), iNote = col("notiz");
-            if (iDay < 0 || iHost < 0 || iAddr < 0) throw new Error("Spalten Tag, Gastgeber, Adresse fehlen");
+            const iDay = col("tag"), iHost = col("gastgeber"), iAddr = col("adresse"), iArea = col("ortsteil"), iNote = col("notiz");
+            if (iDay < 0 || iHost < 0) throw new Error("Spalten Tag und Gastgeber fehlen");
             const byDay = new Map();
             rows.slice(1).forEach(r => {
                 const day = parseInt(r[iDay], 10);
@@ -711,7 +760,8 @@
                     const host = (r[iHost] || "").trim();
                     byDay.set(day, {
                         day, booked: host !== "", host,
-                        address: (r[iAddr] || "").trim(),
+                        address: iAddr >= 0 ? (r[iAddr] || "").trim() : "",
+                        area: iArea >= 0 ? (r[iArea] || "").trim() : "",
                         note: iNote >= 0 ? (r[iNote] || "").trim() : ""
                     });
                 }
@@ -720,7 +770,58 @@
                 byDay.get(i + 1) || { day: i + 1, booked: false, host: "", address: "" });
         }
 
+        // ----- Geschützte Datenquelle -----
+        const PW_KEY = "adventskalender-pw";
+        let unlocked = false;
+
+        function storedPassword() {
+            try { return localStorage.getItem(PW_KEY) || ""; } catch (e) { return ""; }
+        }
+
+        function rememberPassword(pw) {
+            try { pw ? localStorage.setItem(PW_KEY, pw) : localStorage.removeItem(PW_KEY); } catch (e) {}
+        }
+
+        function apiToCalendar(days) {
+            const byDay = new Map();
+            (days || []).forEach(d => {
+                const day = parseInt(d.day, 10);
+                if (day >= 1 && day <= 23) {
+                    const host = String(d.host || "").trim();
+                    byDay.set(day, {
+                        day, booked: host !== "", host,
+                        area: String(d.area || "").trim(),
+                        address: String(d.address || "").trim(),
+                        note: String(d.note || "").trim()
+                    });
+                }
+            });
+            return Array.from({ length: 23 }, (_, i) =>
+                byDay.get(i + 1) || { day: i + 1, booked: false, host: "", address: "", area: "" });
+        }
+
+        // Liefert { data, unlocked, wrongPassword }
+        async function fetchApi(pw) {
+            const url = DATA_API_URL + (pw ? (DATA_API_URL.includes("?") ? "&" : "?") + "pw=" + encodeURIComponent(pw) : "");
+            const res = await fetch(url, { cache: "no-store" });
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            const json = await res.json();
+            return { data: apiToCalendar(json.days), unlocked: !!json.unlocked, wrongPassword: !!json.wrongPassword };
+        }
+
         async function loadData() {
+            if (DATA_API_URL) {
+                try {
+                    const pw = storedPassword();
+                    const r = await fetchApi(pw);
+                    if (pw && !r.unlocked) rememberPassword("");
+                    unlocked = r.unlocked;
+                    return r.data;
+                } catch (err) {
+                    console.warn("Datenquelle nicht erreichbar, nutze calendarData:", err);
+                    return calendarData;
+                }
+            }
             if (!SHEET_CSV_URL) return calendarData;
             try {
                 const res = await fetch(SHEET_CSV_URL, { cache: "no-store" });
@@ -741,7 +842,39 @@
             return long ? `${wd}, ${day}. Dezember` : `${wd.slice(0, 2)}, ${day}. Dez.`;
         }
 
+        // Ort eines Abends: genaue Adresse (falls freigeschaltet), sonst Ortsteil + Freischalten.
+        function locationHtml(x, cls = "") {
+            const where = x.address || x.area;
+            return where ? `<p class="${cls}">${escapeHtml(where)}</p>` : "";
+        }
+
+        // "Weg anzeigen" nur mit Adresse; ohne Adresse ggf. "Genaue Adresse anzeigen"
+        function locationActionsHtml(x, btn = "btn") {
+            if (x.address) {
+                return `<div class="hero-actions"><a class="${btn}" href="${mapsLink(x.address)}" target="_blank" rel="noopener">Weg anzeigen</a></div>`;
+            }
+            if (DATA_API_URL && !unlocked) {
+                return `<div class="hero-actions"><button type="button" class="btn ghost" data-unlock>Genaue Adresse anzeigen</button></div>`;
+            }
+            return "";
+        }
+
+        function unlockFormHtml(message) {
+            return `
+                <form class="unlock" data-unlock-form>
+                    <label for="unlockPw">Passwort für die Adressen</label>
+                    <div class="unlock-row">
+                        <input id="unlockPw" name="pw" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" required>
+                        <button type="submit" class="btn">Anzeigen</button>
+                    </div>
+                    <p class="unlock-msg" role="status">${message || escapeHtml(PASSWORD_HINT)}</p>
+                </form>`;
+        }
+
+        let currentData = [];
+
         function render(data) {
+            currentData = data;
             const now = new Date();
             const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
             const isAdventDay = y === EVENT_YEAR && m === 11 && d >= 1 && d <= 23;
@@ -765,10 +898,10 @@
                 hero.innerHTML = `
                     <p class="hero-when">${when}</p>
                     <h1>${escapeHtml(t.host)}</h1>
-                    ${t.address ? `<p class="hero-where">${escapeHtml(t.address)}</p>` : ""}
+                    ${locationHtml(t, "hero-where")}
                     ${t.note ? `<p class="hero-hostnote">${escapeHtml(t.note)}</p>` : ""}
                     <p class="hero-note">Draußen vor dem Fenster, etwa 20 bis 30 Minuten. Bring deine Tasse mit!</p>
-                    ${t.address ? `<div class="hero-actions"><a class="btn" href="${mapsLink(t.address)}" target="_blank" rel="noopener">Weg anzeigen</a></div>` : ""}`;
+                    ${locationActionsHtml(t)}`;
             } else {
                 const when = isAdventDay
                     ? "Heute Abend · 18:00 Uhr"
@@ -819,7 +952,8 @@
                 const cls = [x.booked ? "" : "free", past ? "past" : "", today ? "is-today" : ""].join(" ").trim();
                 let body;
                 if (x.booked) {
-                    body = `<span class="h">${escapeHtml(x.host)}</span>${x.address ? `<br><span class="a">${escapeHtml(x.address)}</span>` : ""}`;
+                    const where = x.address || x.area;
+                    body = `<span class="h">${escapeHtml(x.host)}</span>${where ? `<br><span class="a">${escapeHtml(where)}</span>` : ""}`;
                 } else if (past) {
                     body = `<span class="a">Kein Termin</span>`;
                 } else {
@@ -835,9 +969,9 @@
                 return `
                     <p class="dd-when">${when}</p>
                     <h3>${escapeHtml(x.host)}</h3>
-                    ${x.address ? `<p>${escapeHtml(x.address)}</p>` : ""}
+                    ${locationHtml(x)}
                     ${x.note ? `<p class="dd-note">${escapeHtml(x.note)}</p>` : ""}
-                    ${x.address && !state.past ? `<div class="hero-actions"><a class="btn ghost" href="${mapsLink(x.address)}" target="_blank" rel="noopener">Weg anzeigen</a></div>` : ""}`;
+                    ${state.past ? "" : locationActionsHtml(x, "btn ghost")}`;
             }
             if (state.past) {
                 return `<p class="dd-when">${when}</p><h3>Kein Termin</h3><p class="dd-muted">An diesem Abend war keine Tür offen.</p>`;
@@ -910,11 +1044,47 @@
                 }
             }
 
-            grid.addEventListener("click", e => {
+            // onclick statt addEventListener: render() läuft nach dem Freischalten erneut
+            grid.onclick = e => {
                 const door = e.target.closest(".door");
                 if (door) select(Number(door.dataset.day), true);
-            });
+            };
         }
+
+        // Freischalten der Adressen (Button -> Formular -> Abfrage)
+        document.addEventListener("click", e => {
+            const b = e.target.closest("[data-unlock]");
+            if (!b) return;
+            const box = b.closest(".hero-actions");
+            box.outerHTML = unlockFormHtml();
+            const input = document.getElementById("unlockPw");
+            if (input) input.focus();
+        });
+
+        document.addEventListener("submit", async e => {
+            const form = e.target.closest("[data-unlock-form]");
+            if (!form) return;
+            e.preventDefault();
+            const pw = form.pw.value.trim();
+            const msg = form.querySelector(".unlock-msg");
+            const btn = form.querySelector("button");
+            btn.disabled = true;
+            msg.textContent = "Einen Moment …";
+            try {
+                const r = await fetchApi(pw);
+                if (r.unlocked) {
+                    unlocked = true;
+                    rememberPassword(pw);
+                    render(r.data);
+                } else {
+                    msg.textContent = "Das Passwort stimmt leider nicht. " + PASSWORD_HINT;
+                    btn.disabled = false;
+                }
+            } catch (err) {
+                msg.textContent = "Das hat gerade nicht geklappt. Bitte versuch es gleich noch einmal.";
+                btn.disabled = false;
+            }
+        });
 
         document.addEventListener("DOMContentLoaded", async () => {
             render(await loadData());
