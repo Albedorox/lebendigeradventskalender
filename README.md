@@ -82,4 +82,4 @@ Im Footer stehen Copyright, Links zu Impressum und Datenschutz der Gemeinde-Webs
 
 ## Schriften
 
-Newsreader und Inter liegen im Ordner `fonts/` (Lizenz: SIL Open Font License 1.1) und werden direkt von dieser Seite geladen. So werden beim Aufruf keine Daten an Google Fonts übertragen.
+Newsreader, Inter, Caveat (Handschrift) und Amatic SC liegen im Ordner `fonts/` (Lizenz: SIL Open Font License 1.1) und werden direkt von dieser Seite geladen. So werden beim Aufruf keine Daten an Google Fonts übertragen.
