@@ -11,8 +11,8 @@
  * Projekteinstellungen → Script-Eigenschaften → PASSWORT.
  */
 
-const MAX_FAILS = 30;          // so viele falsche Versuche ...
-const LOCK_SECONDS = 600;      // ... pro 10 Minuten, danach kurze Sperre
+const MAX_FAILS = 10;          // so viele falsche Versuche ...
+const LOCK_SECONDS = 600;      // ... innerhalb von 10 Minuten, danach 10 Minuten Sperre
 
 function doGet(e) {
   const pw = String((e && e.parameter && e.parameter.pw) || "").trim();
@@ -20,20 +20,27 @@ function doGet(e) {
 
   let unlocked = false;
   let wrongPassword = false;
+  let locked = false;
 
   if (pw) {
     const cache = CacheService.getScriptCache();
     const fails = Number(cache.get("fails") || 0);
-    if (expected && fails < MAX_FAILS && pw.toLowerCase() === expected.toLowerCase()) {
+    if (fails >= MAX_FAILS) {
+      // Gesperrt: kein Passwort wird geprüft, auch nicht das richtige.
+      // Die Sperre läuft LOCK_SECONDS nach dem letzten Fehlversuch ab.
+      locked = true;
+      Utilities.sleep(800);
+    } else if (expected && pw.toLowerCase() === expected.toLowerCase()) {
       unlocked = true;
     } else {
       wrongPassword = true;
       cache.put("fails", String(fails + 1), LOCK_SECONDS);
+      locked = fails + 1 >= MAX_FAILS;
       Utilities.sleep(800); // bremst Durchprobieren
     }
   }
 
-  return json({ ok: true, unlocked: unlocked, wrongPassword: wrongPassword, days: readDays(unlocked) });
+  return json({ ok: true, unlocked: unlocked, wrongPassword: wrongPassword, locked: locked, days: readDays(unlocked) });
 }
 
 function readDays(withAddress) {

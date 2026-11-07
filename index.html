@@ -646,7 +646,7 @@
         <footer>
             <div>
                 <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
-                <div class="version">Version 1.7.1 · Stand 06.11.2026</div>
+                <div class="version">Version 1.7.2 · Stand 07.11.2026</div>
             </div>
             <nav aria-label="Rechtliches">
                 <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
@@ -800,13 +800,13 @@
                 byDay.get(i + 1) || { day: i + 1, booked: false, host: "", address: "", area: "" });
         }
 
-        // Liefert { data, unlocked, wrongPassword }
+        // Liefert { data, unlocked, wrongPassword, locked }
         async function fetchApi(pw) {
             const url = DATA_API_URL + (pw ? (DATA_API_URL.includes("?") ? "&" : "?") + "pw=" + encodeURIComponent(pw) : "");
             const res = await fetch(url, { cache: "no-store" });
             if (!res.ok) throw new Error("HTTP " + res.status);
             const json = await res.json();
-            return { data: apiToCalendar(json.days), unlocked: !!json.unlocked, wrongPassword: !!json.wrongPassword };
+            return { data: apiToCalendar(json.days), unlocked: !!json.unlocked, wrongPassword: !!json.wrongPassword, locked: !!json.locked };
         }
 
         async function loadData() {
@@ -814,7 +814,7 @@
                 try {
                     const pw = storedPassword();
                     const r = await fetchApi(pw);
-                    if (pw && !r.unlocked) rememberPassword("");
+                    if (pw && r.wrongPassword) rememberPassword("");
                     unlocked = r.unlocked;
                     return r.data;
                 } catch (err) {
@@ -1076,6 +1076,9 @@
                     unlocked = true;
                     rememberPassword(pw);
                     render(r.data);
+                } else if (r.locked) {
+                    msg.textContent = "Zu viele Versuche. Bitte in 10 Minuten noch einmal probieren.";
+                    btn.disabled = false;
                 } else {
                     msg.textContent = "Das Passwort stimmt leider nicht. " + PASSWORD_HINT;
                     btn.disabled = false;

@@ -53,7 +53,7 @@ Die veröffentlichte Google-Tabelle ist für jeden lesbar. Damit Adressen nicht 
 
 Hinweise:
 - Ein Passwort, das auf einem Flyer steht, schützt vor Suchmaschinen und Fremden, nicht vor jedem Gemeindemitglied. Das ist so gewollt.
-- Nach 30 falschen Versuchen innerhalb von 10 Minuten nimmt das Script kurz keine Passwörter an. So kann niemand einfach durchprobieren.
+- Nach 10 falschen Versuchen innerhalb von 10 Minuten nimmt das Script 10 Minuten lang keine Passwörter an (auch nicht das richtige). Die Seite zeigt dann „Zu viele Versuche“. So kann niemand einfach durchprobieren.
 - Auch Namen sind personenbezogene Daten. Am besten holt man von allen Gastgebern eine kurze Einwilligung ein, was online stehen darf.
 - Den Hinweistext, wo man das Passwort bekommt, ändert man in `index.html` bei `PASSWORD_HINT`.
 
