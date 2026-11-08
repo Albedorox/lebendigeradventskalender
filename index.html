@@ -628,6 +628,12 @@
         .night .houses rect[fill="#ffd27a"] { filter: drop-shadow(0 0 6px rgba(255, 210, 122, .9)); }
         /* Die Karte ragt ein Stück in die Häuserreihe hinein */
         main { position: relative; margin-top: calc(var(--houses-h) * -0.3); }
+        /* Tageskarte leicht durchscheinend, Häuser schimmern durch */
+        .hero {
+            background: color-mix(in srgb, var(--surface) 62%, transparent);
+            -webkit-backdrop-filter: blur(4px) saturate(1.2);
+            backdrop-filter: blur(4px) saturate(1.2);
+        }
         .hero { border: 0; border-radius: 20px; box-shadow: 0 24px 50px -24px rgba(10, 18, 40, .55); }
         .hero::before { height: 0; }
         .hero-when { color: var(--today); text-transform: uppercase; letter-spacing: .08em; font-size: 13px; font-weight: 600; }
