@@ -625,7 +625,10 @@
         .night .garland { position: absolute; top: 0; left: 50%; width: 100%; max-width: 1400px; height: 140px; transform: translateX(-50%); pointer-events: none; }
         .night .garland path { filter: drop-shadow(0 0 4px rgba(255, 210, 122, .45)); }
         .night-inner { padding-top: 112px; }
-        .night .org-line { position: relative; z-index: 1; display: inline-flex; padding: 4px 12px 4px 4px; border-radius: 999px; margin: 14px 0 0; }
+        .night .org-line { position: relative; z-index: 1; display: inline-flex; padding: 4px 12px 4px 4px; border-radius: 999px; margin: 16px 0 0; gap: 10px; }
+        .night .logo { width: 38px; height: 38px; flex: none; }
+        .night .org-name { text-align: left; font-size: 14px; line-height: 1.25; color: #e4e5ec; }
+        .night .org-name strong { font-weight: 600; color: #fff; }
         @media (max-width: 600px) {
             .night .garland { height: 140px; width: 1000px; }
             .night-inner { padding-top: 118px; }
@@ -647,7 +650,7 @@
             <div class="night-inner">
                 <p class="title">Lebendiger Adventskalender</p>
                 <p class="tag">Ein Licht wandert durch die Gemeinde</p>
-                <div class="org-line"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#8a4f7d"/><path d="M20 8v24M13 15h14" stroke="#fff" stroke-width="3.4" stroke-linecap="round"/></svg><span>Ev. Kirchengemeinde Seeregion Friedrichshafen</span></div>
+                <div class="org-line"><svg class="logo" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="20" fill="#8d197c"/><g fill="#fff"><rect x="16.49" y="7.22" width="2.78" height="8.33"/><rect x="16.49" y="17.02" width="2.78" height="17.96"/><rect x="20.73" y="7.22" width="2.78" height="8.33"/><rect x="20.73" y="17.02" width="2.78" height="17.96"/><rect x="9.39" y="12.69" width="9.88" height="2.86"/><rect x="20.73" y="12.69" width="9.96" height="2.86"/><rect x="9.39" y="17.02" width="9.88" height="2.78"/><rect x="20.73" y="17.02" width="9.96" height="2.78"/></g></svg><span class="org-name"><strong>Evangelische Kirchengemeinde</strong><br>Seeregion Friedrichshafen</span></div>
             </div>
             <svg class="houses" viewBox="0 0 1200 230" preserveAspectRatio="xMidYMax slice" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"><defs>
   <filter id="wcNight" x="-10%" y="-10%" width="120%" height="120%">
@@ -718,7 +721,7 @@
         <footer>
             <div>
                 <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
-                <div class="version">Version 1.8.0 · Stand 08.11.2026</div>
+                <div class="version">Version 1.8.2 · Stand 08.11.2026</div>
             </div>
             <nav aria-label="Rechtliches">
                 <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
