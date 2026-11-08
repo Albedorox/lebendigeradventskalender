@@ -82,6 +82,10 @@ Alternative: Netlify (Ordner per Drag & Drop auf app.netlify.com/drop ziehen).
 - **Teilen:** Teilt Tag, Gastgeber und Ortsteil mit dem Link zur Seite, nie die genaue Adresse. Am Handy öffnet sich das Teilen-Menü, am Computer wird der Text kopiert.
 - **Wetter:** Für Abende in den nächsten 16 Tagen zeigt die Seite die Vorhersage für 18 Uhr in Friedrichshafen mit passenden Tipps (Kleidung, Regen, Schnee, Glätte, Wind). Die Daten kommen von [Open-Meteo](https://open-meteo.com/) (kostenlos, ohne Anmeldung). Dabei sieht Open-Meteo die IP-Adresse der Besucher; das sollte in der Datenschutzerklärung der Gemeinde erwähnt werden. Abschalten: in `index.html` `SHOW_WEATHER = false` setzen.
 
+## Vorschaubild beim Teilen
+
+Wer den Link in Signal, WhatsApp & Co. teilt, sieht das Bild `og-image.jpg` (1200 × 630) mit Titel und Beschreibung aus den `og:`-Angaben im Kopf von `index.html`. Messenger merken sich die Vorschau eine Weile; nach einer Änderung kann es dauern, bis das neue Bild erscheint.
+
 ## Version und Footer
 
 Im Footer stehen Copyright, Links zu Impressum und Datenschutz der Gemeinde-Website und eine kleine Versionsnummer. Bei größeren Änderungen in `index.html` die Zeile `Version … · Stand …` anpassen.
