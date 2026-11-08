@@ -626,8 +626,8 @@
         .night .houses { position: relative; display: block; width: 100%; height: var(--houses-h); margin-top: 18px; }
         :root { --houses-h: clamp(150px, 14vw, 230px); }
         .night .houses rect[fill="#ffd27a"] { filter: drop-shadow(0 0 6px rgba(255, 210, 122, .9)); }
-        /* Die Karte liegt nur auf dem verschneiten Boden, nicht auf den Häusern */
-        main { position: relative; margin-top: calc(var(--houses-h) * -0.15); }
+        /* Die Karte ragt ein Stück in die Häuserreihe hinein */
+        main { position: relative; margin-top: calc(var(--houses-h) * -0.3); }
         .hero { border: 0; border-radius: 20px; box-shadow: 0 24px 50px -24px rgba(10, 18, 40, .55); }
         .hero::before { height: 0; }
         .hero-when { color: var(--today); text-transform: uppercase; letter-spacing: .08em; font-size: 13px; font-weight: 600; }
@@ -737,7 +737,7 @@
         <footer>
             <div>
                 <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
-                <div class="version">Version 1.9.1 · Stand 08.11.2026</div>
+                <div class="version">Version 1.9.2 · Stand 08.11.2026</div>
             </div>
             <nav aria-label="Rechtliches">
                 <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
