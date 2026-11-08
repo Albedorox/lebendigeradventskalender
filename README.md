@@ -76,6 +76,12 @@ Falls eine Änderung nicht auf der Seite ankommt: unter **Actions** nachsehen, o
 
 Alternative: Netlify (Ordner per Drag & Drop auf app.netlify.com/drop ziehen).
 
+## Kalender, Teilen und Wetter
+
+- **In den Kalender:** Bei jedem vergebenen Abend lädt der Knopf einen einzelnen Termin (.ics, 18:00 bis 18:30 Uhr, Erinnerung 30 Minuten vorher). Auf dem iPhone öffnet sich direkt „Zum Kalender hinzufügen“.
+- **Teilen:** Teilt Tag, Gastgeber und Ortsteil mit dem Link zur Seite, nie die genaue Adresse. Am Handy öffnet sich das Teilen-Menü, am Computer wird der Text kopiert.
+- **Wetter:** Für Abende in den nächsten 16 Tagen zeigt die Seite die Vorhersage für 18 Uhr in Friedrichshafen mit passenden Tipps (Kleidung, Regen, Schnee, Glätte, Wind). Die Daten kommen von [Open-Meteo](https://open-meteo.com/) (kostenlos, ohne Anmeldung). Dabei sieht Open-Meteo die IP-Adresse der Besucher; das sollte in der Datenschutzerklärung der Gemeinde erwähnt werden. Abschalten: in `index.html` `SHOW_WEATHER = false` setzen.
+
 ## Version und Footer
 
 Im Footer stehen Copyright, Links zu Impressum und Datenschutz der Gemeinde-Website und eine kleine Versionsnummer. Bei größeren Änderungen in `index.html` die Zeile `Version … · Stand …` anpassen.
