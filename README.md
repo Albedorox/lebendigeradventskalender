@@ -20,6 +20,7 @@ Die Seite liest die Belegung aus einer veröffentlichten Google-Tabelle. Pflegen
 ### Im Alltag
 
 - Ein Abend gilt als **vergeben**, sobald in der Spalte `Gastgeber` etwas steht. Leeren Gastgeber = Abend ist wieder frei.
+- **Heiligabend (Tag 24):** Eine Zeile mit `Tag` = 24 erscheint als eigene, hervorgehobene Kachel unter den Türchen (am 24. selbst auch oben als Tageskarte). `Gastgeber` ist die Überschrift (z. B. „Krippenspiele an Heiligabend“), in `Ortsteil` stehen die Orte mit Uhrzeit, je Ort eine eigene Zeile in der Zelle (Zeilenumbruch, oder mit `;` trennen), `Adresse` genauso, in derselben Reihenfolge. Die `Notiz` ist der Weihnachtsgruß. Alternativ geht auch eine Zeile mit Tag 24 pro Ort: dann ist `Gastgeber` der Ort, und die Notiz der ersten dieser Zeilen ist der Gruß. Ohne Zeile für Tag 24 gibt es keine Kachel.
 - Die optionale Spalte `Notiz` wird auf der Seite beim jeweiligen Abend angezeigt (z. B. „Bitte durch den Hof, Eingang links“ oder „Mit Kinderpunsch“).
 - Ist keine `Adresse` eingetragen, erscheint auch kein „Weg anzeigen“-Button.
 - Weitere Spalten (z. B. `Telefon`) sind erlaubt und werden **nicht** angezeigt. Gut für interne Infos.
