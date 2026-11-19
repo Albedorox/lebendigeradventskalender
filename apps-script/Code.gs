@@ -54,7 +54,7 @@ function readDays(withAddress) {
   const days = [];
   rows.slice(1).forEach(function (r) {
     const day = parseInt(r[iDay], 10);
-    if (!(day >= 1 && day <= 23)) return;
+    if (!(day >= 1 && day <= 24)) return;   // 24 = Heiligabend (Krippenspiele)
     const entry = { day: day, host: cell(r, iHost), area: cell(r, iArea), note: cell(r, iNote) };
     if (withAddress) entry.address = cell(r, iAddr);
     days.push(entry);
