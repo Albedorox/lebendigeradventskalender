@@ -792,7 +792,7 @@
         <footer>
             <div>
                 <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
-                <div class="version">Version 1.11.0 · Stand 23.11.2026</div>
+                <div class="version">Version 1.11.1 · Stand 23.11.2026</div>
             </div>
             <nav aria-label="Rechtliches">
                 <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
@@ -1533,14 +1533,17 @@
             render(await loadData());
         });
     </script>
-    <!-- ===================== WINTER-EXPERIMENT (Schnee + pendelnde Sterne) =====================
+    <!-- ===================== WINTER-EXPERIMENT (Schnee + wippende Sterne) =====================
          Ausschalten: in der Zeile darunter  true  durch  false  ersetzen.
          Ganz entfernen: alles von hier bis "ENDE WINTER-EXPERIMENT" löschen.
          Bei "Bewegung reduzieren" (prefers-reduced-motion) bleibt alles still. -->
     <style>
         .night .snow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
-        .night .garland .swing { transform-box: view-box; animation: star-swing var(--d, 6s) ease-in-out var(--delay, 0s) infinite alternate; }
-        @keyframes star-swing { from { transform: rotate(calc(var(--a, 2.5deg) * -1)); } to { transform: rotate(var(--a, 2.5deg)); } }
+        /* Sterne wippen sanft auf und ab (nur nach oben, damit die Schnur oben nie abreißt) */
+        .night .garland .swing { animation: star-bob var(--d, 5s) ease-in-out var(--delay, 0s) infinite alternate; }
+        @keyframes star-bob { from { transform: translateY(0); } to { transform: translateY(calc(var(--a, 5px) * -1)); } }
+        /* Die gezeichneten, stehenden Schneeflocken passen nicht zum fallenden Schnee */
+        .night .garland > g[stroke] { display: none; }
         @media (prefers-reduced-motion: reduce) { .night .garland .swing { animation: none; } .night .snow { display: none; } }
     </style>
     <script>
@@ -1550,17 +1553,15 @@
         const night = document.querySelector(".night");
         if (!night) return;
 
-        // Sterne: jede Schnur samt Stern pendelt sanft um ihren Aufhängepunkt
+        // Sterne: jede Schnur samt Stern wippt sanft auf und ab
         const garland = night.querySelector(".garland");
         if (garland) {
             const ns = "http://www.w3.org/2000/svg";
             garland.querySelectorAll(':scope > line[y1="0"]').forEach((line, i) => {
-                const x = line.getAttribute("x1");
                 const g = document.createElementNS(ns, "g");
                 g.setAttribute("class", "swing");
-                g.style.transformOrigin = x + "px 0px";
-                g.style.setProperty("--d", (5 + (i * 1.7) % 3).toFixed(1) + "s");
-                g.style.setProperty("--a", (1.8 + (i * 0.9) % 1.6).toFixed(1) + "deg");
+                g.style.setProperty("--d", (3.5 + (i * 1.7) % 2.5).toFixed(1) + "s");
+                g.style.setProperty("--a", (4 + (i * 1.3) % 3).toFixed(1) + "px");
                 g.style.setProperty("--delay", (-(i * 1.3) % 6).toFixed(1) + "s");
                 line.before(g);
                 let el = line;
