@@ -792,7 +792,7 @@
         <footer>
             <div>
                 <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
-                <div class="version">Version 1.10.2 · Stand 23.11.2026</div>
+                <div class="version">Version 1.11.0 · Stand 23.11.2026</div>
             </div>
             <nav aria-label="Rechtliches">
                 <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
@@ -1533,5 +1533,84 @@
             render(await loadData());
         });
     </script>
+    <!-- ===================== WINTER-EXPERIMENT (Schnee + pendelnde Sterne) =====================
+         Ausschalten: in der Zeile darunter  true  durch  false  ersetzen.
+         Ganz entfernen: alles von hier bis "ENDE WINTER-EXPERIMENT" löschen.
+         Bei "Bewegung reduzieren" (prefers-reduced-motion) bleibt alles still. -->
+    <style>
+        .night .snow { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1; }
+        .night .garland .swing { transform-box: view-box; animation: star-swing var(--d, 6s) ease-in-out var(--delay, 0s) infinite alternate; }
+        @keyframes star-swing { from { transform: rotate(calc(var(--a, 2.5deg) * -1)); } to { transform: rotate(var(--a, 2.5deg)); } }
+        @media (prefers-reduced-motion: reduce) { .night .garland .swing { animation: none; } .night .snow { display: none; } }
+    </style>
+    <script>
+    (function () {
+        const WINTER_FX = true;
+        if (!WINTER_FX || matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+        const night = document.querySelector(".night");
+        if (!night) return;
+
+        // Sterne: jede Schnur samt Stern pendelt sanft um ihren Aufhängepunkt
+        const garland = night.querySelector(".garland");
+        if (garland) {
+            const ns = "http://www.w3.org/2000/svg";
+            garland.querySelectorAll(':scope > line[y1="0"]').forEach((line, i) => {
+                const x = line.getAttribute("x1");
+                const g = document.createElementNS(ns, "g");
+                g.setAttribute("class", "swing");
+                g.style.transformOrigin = x + "px 0px";
+                g.style.setProperty("--d", (5 + (i * 1.7) % 3).toFixed(1) + "s");
+                g.style.setProperty("--a", (1.8 + (i * 0.9) % 1.6).toFixed(1) + "deg");
+                g.style.setProperty("--delay", (-(i * 1.3) % 6).toFixed(1) + "s");
+                line.before(g);
+                let el = line;
+                while (el && (el === line || (el.tagName !== "line" && el.tagName !== "g"))) {
+                    const next = el.nextElementSibling;
+                    g.appendChild(el);
+                    el = next;
+                }
+            });
+        }
+
+        // Schnee: wenige, kleine Flocken, die an der Unterkante der Häuser verschwinden
+        const canvas = document.createElement("canvas");
+        canvas.className = "snow";
+        canvas.setAttribute("aria-hidden", "true");
+        night.appendChild(canvas);
+        const ctx = canvas.getContext("2d");
+        let w = 0, h = 0, flakes = [], running = false, last = 0;
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const rnd = (a, b) => a + Math.random() * (b - a);
+        const flake = (top) => ({ x: rnd(0, w), y: top ? rnd(-h, 0) : rnd(0, h), r: rnd(0.8, 2.2), v: rnd(12, 30),
+            o: rnd(0.35, 0.8), s: rnd(0, Math.PI * 2), sw: rnd(0.4, 1.1), amp: rnd(6, 18) });
+        function resize() {
+            w = night.clientWidth; h = night.clientHeight;
+            canvas.width = w * dpr; canvas.height = h * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            const n = Math.round(Math.min(70, w / 16));
+            flakes = Array.from({ length: n }, () => flake(false));
+        }
+        function frame(t) {
+            if (!running) return;
+            const dt = Math.min(0.05, (t - (last || t)) / 1000); last = t;
+            ctx.clearRect(0, 0, w, h);
+            for (const f of flakes) {
+                f.y += f.v * dt; f.s += f.sw * dt;
+                if (f.y - f.r > h) Object.assign(f, flake(true), { y: -5 });
+                ctx.globalAlpha = f.o;
+                ctx.beginPath(); ctx.arc(f.x + Math.sin(f.s) * f.amp, f.y, f.r, 0, Math.PI * 2);
+                ctx.fillStyle = "#fff"; ctx.fill();
+            }
+            requestAnimationFrame(frame);
+        }
+        function setRunning(on) { if (on === running) return; running = on; last = 0; if (on) requestAnimationFrame(frame); }
+        resize();
+        addEventListener("resize", resize);
+        // Nur animieren, wenn der Kopf sichtbar ist (spart Akku)
+        new IntersectionObserver(([e]) => setRunning(e.isIntersecting && !document.hidden)).observe(night);
+        document.addEventListener("visibilitychange", () => setRunning(!document.hidden && night.getBoundingClientRect().bottom > 0));
+    })();
+    </script>
+    <!-- ===================== ENDE WINTER-EXPERIMENT ===================== -->
 </body>
 </html>
