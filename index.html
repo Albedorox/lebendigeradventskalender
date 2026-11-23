@@ -672,6 +672,39 @@
         .night .logo { width: 38px; height: 38px; flex: none; }
         .night .org-name { text-align: left; font-size: 14px; line-height: 1.25; color: #e4e5ec; }
         .night .org-name strong { font-weight: 600; color: #fff; }
+        /* ---------- Heiligabend (24.): besondere Kachel ---------- */
+        .xmas { position: relative; margin-top: 14px; padding: 22px 20px 24px; border-radius: 20px 20px 10px 10px; text-align: center;
+            color: #fff6e3; background: radial-gradient(130% 90% at 50% 0%, var(--night-2) 0%, var(--night) 70%);
+            box-shadow: inset 0 0 0 5px var(--night), inset 0 0 0 6px rgba(255, 210, 122, .5), 0 0 0 4px rgba(255, 210, 122, .2), 0 14px 36px -12px rgba(255, 190, 90, .55);
+            overflow-wrap: anywhere; scroll-margin-top: 16px; }
+        .xmas[hidden] { display: none; }
+        .xmas-head { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .xmas-title, .xmas-greeting, .hero.is-eve h1, .hero.is-eve .hero-hostnote { white-space: pre-line; }
+        .xmas-star { width: 30px; height: 30px; fill: var(--glow); filter: drop-shadow(0 0 8px rgba(255, 210, 122, .8)); flex: none; }
+        .xmas-num { font-family: var(--hand); font-weight: 700; font-size: 52px; line-height: .9; color: var(--glow); text-shadow: 0 0 18px rgba(255, 210, 122, .45); }
+        .xmas-when { text-align: left; font-size: 12px; line-height: 1.35; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #d9dbe5; }
+        .xmas-title { font-family: var(--hand); font-weight: 700; font-size: clamp(32px, 8vw, 42px); line-height: 1.05; margin: 12px 0 6px; color: #fff6e3; }
+        .xmas-places, .hero .xmas-places { list-style: none; margin: 14px auto 0; padding: 0; max-width: 460px; }
+        .xmas-places li { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 9px 0; border-top: 1px solid rgba(255, 210, 122, .22); }
+        .xmas-places li:first-child { border-top: 0; }
+        .xp-main { font-weight: 600; white-space: pre-line; }
+        .xp-sub { font-size: 14px; color: #c9cbd6; white-space: pre-line; }
+        .xp-way { font-size: 14px; color: var(--glow); text-underline-offset: 3px; margin-top: 2px; }
+        .xmas-greeting { font-family: var(--hand); font-size: 25px; line-height: 1.25; color: var(--glow); margin: 16px auto 0; max-width: 520px; }
+        .xmas-greeting.long, .hero-hostnote.long { font-family: var(--serif); font-style: italic; font-size: 18px; line-height: 1.5; }
+        .xmas-greeting.long { color: #f1e6cf; }
+        .xmas .hero-actions { justify-content: center; }
+        .xmas .btn.ghost { color: var(--glow); border-color: rgba(255, 210, 122, .5); background: transparent; }
+        .xmas.past { opacity: .75; }
+        /* Am 24. selbst: Tageskarte im Heiligabend-Gewand */
+        .hero .xmas-places li { align-items: flex-start; border-top-color: var(--line); }
+        .hero .xmas-places { margin: 8px 0 0; max-width: none; }
+        .hero .xp-sub { color: var(--muted); }
+        .hero .xp-way { color: var(--ink); }
+        .hero.is-eve .hero-hostnote { margin-top: 14px; }
+        .next li.is-eve .h a { color: var(--accent); }
+        .all li.is-eve .h { color: var(--accent); font-weight: 500; }
+        @media (max-width: 600px) { .xmas { padding: 20px 16px 22px; } .xmas-num { font-size: 46px; } }
         @media (max-width: 600px) {
             .night .garland { height: 140px; width: 1000px; }
             .night-inner { padding-top: 118px; }
@@ -715,6 +748,7 @@
                 <p class="cal-intro">Jeden Abend öffnet sich ein Türchen. Tipp eins an für Notiz und Weg.</p>
                 <div class="doors" id="doors" role="list"></div>
                 <div class="door-detail" id="doorDetail" aria-live="polite"></div>
+                <section class="xmas" id="christmas" aria-label="Heiligabend, 24. Dezember" hidden></section>
             </section>
 
             <section class="more">
@@ -757,7 +791,7 @@
         <footer>
             <div>
                 <div>© 2026 Evangelische Kirchengemeinde Seeregion Friedrichshafen</div>
-                <div class="version">Version 1.9.3 · Stand 08.11.2026</div>
+                <div class="version">Version 1.10.0 · Stand 19.11.2026</div>
             </div>
             <nav aria-label="Rechtliches">
                 <a href="https://www.evkirche-seeregion-fn.de/meta/impressum" target="_blank" rel="noopener">Impressum</a>
@@ -857,6 +891,35 @@
             return rows;
         }
 
+        // ----- Heiligabend (Tag 24): Krippenspiele in den Gemeinden -----
+        // Eine Zeile mit Tag 24: Gastgeber = Überschrift, Ortsteil/Adresse = Orte
+        // (mehrere Orte je in eine eigene Zeile der Zelle oder mit ";" trennen),
+        // Notiz = Weihnachtsgruß. Alternativ mehrere Zeilen mit Tag 24, je eine pro Ort;
+        // dann ist die Notiz der ersten Zeile der Gruß, die übrigen Notizen stehen beim Ort.
+        let christmas = null;
+        const XMAS_TITLE = "Krippenspiele an Heiligabend";
+
+        function splitLines(text) {
+            return String(text || "").split(/\r?\n|;/).map(t => t.trim()).filter(Boolean);
+        }
+
+        function buildChristmas(rows) {
+            rows = (rows || []).filter(r => r.host || r.area || r.address || r.note);
+            if (!rows.length) return null;
+            if (rows.length === 1) {
+                const r = rows[0];
+                const areas = splitLines(r.area), addrs = splitLines(r.address);
+                const places = Array.from({ length: Math.max(areas.length, addrs.length) }, (_, i) =>
+                    ({ name: "", area: areas[i] || "", address: addrs[i] || "", note: "" }));
+                return { title: r.host || XMAS_TITLE, greeting: r.note, places };
+            }
+            return {
+                title: XMAS_TITLE,
+                greeting: rows[0].note,
+                places: rows.map((r, i) => ({ name: r.host, area: r.area, address: r.address, note: i ? r.note : "" }))
+            };
+        }
+
         // Tabelle mit Spalten "Tag", "Gastgeber", "Adresse" in calendarData-Form bringen.
         // Ein Abend gilt als vergeben, sobald ein Gastgeber eingetragen ist.
         function sheetToCalendar(rows) {
@@ -865,9 +928,17 @@
             const iDay = col("tag"), iHost = col("gastgeber"), iAddr = col("adresse"), iArea = col("ortsteil"), iNote = col("notiz");
             if (iDay < 0 || iHost < 0) throw new Error("Spalten Tag und Gastgeber fehlen");
             const byDay = new Map();
+            const eve = [];
             rows.slice(1).forEach(r => {
                 const day = parseInt(r[iDay], 10);
-                if (day >= 1 && day <= 23) {
+                if (day === 24) {
+                    eve.push({
+                        host: (r[iHost] || "").trim(),
+                        area: iArea >= 0 ? (r[iArea] || "").trim() : "",
+                        address: iAddr >= 0 ? (r[iAddr] || "").trim() : "",
+                        note: iNote >= 0 ? (r[iNote] || "").trim() : ""
+                    });
+                } else if (day >= 1 && day <= 23) {
                     const host = (r[iHost] || "").trim();
                     byDay.set(day, {
                         day, booked: host !== "", host,
@@ -877,6 +948,7 @@
                     });
                 }
             });
+            christmas = buildChristmas(eve);
             return Array.from({ length: 23 }, (_, i) =>
                 byDay.get(i + 1) || { day: i + 1, booked: false, host: "", address: "" });
         }
@@ -895,9 +967,17 @@
 
         function apiToCalendar(days) {
             const byDay = new Map();
+            const eve = [];
             (days || []).forEach(d => {
                 const day = parseInt(d.day, 10);
-                if (day >= 1 && day <= 23) {
+                if (day === 24) {
+                    eve.push({
+                        host: String(d.host || "").trim(),
+                        area: String(d.area || "").trim(),
+                        address: String(d.address || "").trim(),
+                        note: String(d.note || "").trim()
+                    });
+                } else if (day >= 1 && day <= 23) {
                     const host = String(d.host || "").trim();
                     byDay.set(day, {
                         day, booked: host !== "", host,
@@ -907,6 +987,7 @@
                     });
                 }
             });
+            christmas = buildChristmas(eve);
             return Array.from({ length: 23 }, (_, i) =>
                 byDay.get(i + 1) || { day: i + 1, booked: false, host: "", address: "", area: "" });
         }
@@ -1163,6 +1244,8 @@
             const y = now.getFullYear(), m = now.getMonth(), d = now.getDate();
             const isAdventDay = y === EVENT_YEAR && m === 11 && d >= 1 && d <= 23;
             const isOver = y > EVENT_YEAR || (y === EVENT_YEAR && m === 11 && d > 23);
+            const isEve = y === EVENT_YEAR && m === 11 && d === 24;
+            const isAfterEve = y > EVENT_YEAR || (y === EVENT_YEAR && m === 11 && d > 24);
             const currentDay = isAdventDay ? d : 1;
 
             // ----- Heute (oder Vorschau / Rückblick) -----
@@ -1170,7 +1253,15 @@
             hero.classList.remove("loading");
             const t = data.find(x => x.day === currentDay);
 
-            if (isOver) {
+            hero.classList.toggle("is-eve", !!(isEve && christmas));
+            if (isEve && christmas) {
+                hero.innerHTML = `
+                    <p class="hero-when">Heute · Heiligabend</p>
+                    <h1>${escapeHtml(christmas.title)}</h1>
+                    ${xmasPlacesHtml(christmas)}
+                    ${xmasGreetingHtml(christmas, "hero-hostnote")}
+                    ${xmasActionsHtml(christmas)}`;
+            } else if (isOver) {
                 hero.innerHTML = `
                     <p class="hero-when">Advent ${EVENT_YEAR}</p>
                     <h1>Danke für 23 offene Türen!</h1>
@@ -1202,11 +1293,14 @@
             // ----- Als Nächstes (3 Abende) -----
             const nextSection = document.getElementById("next");
             const upcoming = isOver ? [] : data.filter(x => x.day > currentDay).slice(0, 3);
+            if (christmas && !isOver && upcoming.length < 3) upcoming.push({ day: 24, eve: true });
             if (upcoming.length) {
                 document.getElementById("nextList").innerHTML = upcoming.map(x => `
-                    <li>
+                    <li${x.eve ? ' class="is-eve"' : ""}>
                         <span class="d">${dateLabel(x.day)}</span>
-                        <span class="h">${x.booked
+                        <span class="h">${x.eve
+                            ? `<a href="#christmas">${escapeHtml(christmas.title)}</a>`
+                            : x.booked
                             ? escapeHtml(x.host)
                             : `<a href="${requestLink(x.day)}">Noch frei, übernehmen?</a>`}</span>
                     </li>`).join("");
@@ -1246,9 +1340,62 @@
                     body = `<a href="${requestLink(x.day)}">Noch frei, übernehmen?</a>`;
                 }
                 return `<li class="${cls}"><span class="d">${dateLabel(x.day)}${today ? " · heute" : ""}</span><span>${body}</span></li>`;
-            }).join("");
+            }).join("") + (christmas
+                ? `<li class="is-eve${isAfterEve ? " past" : ""}"><span class="d">${dateLabel(24)}</span><span><span class="h">${escapeHtml(christmas.title)}</span><br><span class="a">Heiligabend</span></span></li>`
+                : "");
+
+            // ----- Heiligabend-Kachel unter den Türchen -----
+            const xmas = document.getElementById("christmas");
+            xmas.hidden = !christmas;
+            xmas.classList.toggle("past", isAfterEve);
+            xmas.innerHTML = christmas ? christmasCardHtml(christmas, isAfterEve) : "";
 
             fillWeather(document);
+        }
+
+        // ----- Heiligabend-Kachel -----
+        const ICON_STAR = '<svg class="xmas-star" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3.5 24.6 14.8 36.5 15.6 27.3 23.3 30.4 35 20 28.4 9.6 35 12.7 23.3 3.5 15.6 15.4 14.8Z"/></svg>';
+
+        function xmasPlacesHtml(c) {
+            if (!c.places.length) return "";
+            return `<ul class="xmas-places">${c.places.map(p => {
+                const where = p.address || p.area;
+                const main = p.name || where;
+                const sub = p.name ? where : "";
+                return `<li>
+                    <span class="xp-main">${escapeHtml(main)}</span>
+                    ${sub ? `<span class="xp-sub">${escapeHtml(sub)}</span>` : ""}
+                    ${p.note ? `<span class="xp-sub">${escapeHtml(p.note)}</span>` : ""}
+                    ${p.address ? `<a class="xp-way" href="${mapsLink(p.address)}" target="_blank" rel="noopener">Weg anzeigen</a>` : ""}
+                </li>`;
+            }).join("")}</ul>`;
+        }
+
+        function xmasGreetingHtml(c, cls) {
+            if (!c.greeting) return "";
+            return `<p class="${cls}${c.greeting.length > 220 ? " long" : ""}">${escapeHtml(c.greeting)}</p>`;
+        }
+
+        // Ohne Passwort: ein Knopf für alle Adressen (wie bei den anderen Abenden)
+        function xmasActionsHtml(c) {
+            const hasAddress = c.places.some(p => p.address);
+            if (!hasAddress && c.places.length && DATA_API_URL && !unlocked) {
+                return `<div class="hero-actions"><button type="button" class="btn ghost" data-unlock>Genaue Adressen anzeigen</button></div>`;
+            }
+            return "";
+        }
+
+        function christmasCardHtml(c, past) {
+            return `
+                <div class="xmas-head">
+                    ${ICON_STAR}
+                    <span class="xmas-num">24</span>
+                    <span class="xmas-when">Heiligabend<br>${dateLabel(24, true)}</span>
+                </div>
+                <h3 class="xmas-title">${escapeHtml(c.title)}</h3>
+                ${xmasPlacesHtml(c)}
+                ${xmasGreetingHtml(c, "xmas-greeting")}
+                ${past ? "" : xmasActionsHtml(c)}`;
         }
 
         function doorDetailHtml(x, state) {
