@@ -679,7 +679,9 @@
             box-shadow: inset 0 0 0 5px var(--night), inset 0 0 0 6px rgba(255, 210, 122, .5), 0 0 0 4px rgba(255, 210, 122, .2), 0 14px 36px -12px rgba(255, 190, 90, .55);
             overflow-wrap: anywhere; scroll-margin-top: 16px; }
         .xmas[hidden] { display: none; }
-        .xmas-head { display: flex; align-items: center; justify-content: center; gap: 12px; }
+        .xmas-head { display: flex; align-items: center; justify-content: center; gap: 12px; overflow-wrap: normal; }
+        .xmas-num { flex: none; white-space: nowrap; }
+        .xmas-when { min-width: 0; }
         .xmas-title, .xmas-greeting, .hero.is-eve h1, .hero.is-eve .hero-hostnote { white-space: pre-line; }
         .xmas-star { width: 30px; height: 30px; fill: var(--glow); filter: drop-shadow(0 0 8px rgba(255, 210, 122, .8)); flex: none; }
         .xmas-num { font-family: var(--hand); font-weight: 700; font-size: 52px; line-height: .9; color: var(--glow); text-shadow: 0 0 18px rgba(255, 210, 122, .45); }
@@ -1391,7 +1393,7 @@
                 <div class="xmas-head">
                     ${ICON_STAR}
                     <span class="xmas-num">24</span>
-                    <span class="xmas-when">Heiligabend<br>${dateLabel(24, true)}</span>
+                    <span class="xmas-when">Heiligabend<br>${dateLabel(24, true).replace(" Dezember", "\u00a0Dezember")}</span>
                 </div>
                 <h3 class="xmas-title">${escapeHtml(c.title)}</h3>
                 ${xmasPlacesHtml(c)}
